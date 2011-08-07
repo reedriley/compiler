@@ -4,38 +4,67 @@ require 'rake/clean'
 task :default => [:build] do
 end
 
-CLEAN.include('*.o')
-CLEAN.include('.*.d')
-
-SRC = FileList['*.cpp']
-OBJ = SRC.ext('o')
-
-SRC.each do |srcfile|
+def rule_gnu_compilers(compiler, srcfile)
   objfile = File.basename(srcfile).ext('o')
   depfile = '.' + File.basename(srcfile).ext('d')
 
+  CLEAN << objfile if File.exists? objfile
+  CLEAN << depfile if File.exists? depfile
+
+  dependencies = [srcfile]
+
   if (File.exists?(depfile))
-    dependencies = []
     File.open(depfile) do |deps|
       while line = deps.gets
         line.split(%r{\s+|:|\\$}).each do |dep|
-          dependencies << dep if !dep.empty?
+          dependencies << dep if !dep.empty? && dep != objfile
         end
       end
     end
-    dependencies.delete_at(0)
-  else
-    dependencies = [srcfile]
   end
-
+  
   file objfile => dependencies do
-    sh "g++ -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
+    sh "#{compiler} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
   end
 end
 
+def rule_c(srcfile)
+  rule_gnu_compilers("gcc", srcfile)
+end
+
+def rule_cpp(srcfile)
+  rule_gnu_compilers("g++", srcfile)
+end
+
+def rule_bison(srcfile)
+  generated_file = File.basename(srcfile).ext('tab.c')
+
+  CLEAN << generated_file if File.exists? generated_file
+
+  file generated_file => srcfile do
+    sh "bison #{srcfile}"
+  end
+
+  rule_c(generated_file)
+end
+
+FileList['*.cpp'].each do |srcfile|
+  rule_cpp(srcfile)
+end
+
+FileList['*.c'].each do |srcfile|
+  rule_c(srcfile)
+end
+
+FileList['*.y'].each do |srcfile|
+  rule_bison(srcfile)
+end
+
+
 CLOBBER.include("fran")
-file "fran" => OBJ do |t|
-  sh "g++ -o #{t.name} #{OBJ}"
+
+file "fran" => ["fran.o", "parser.tab.o"] do |t|
+  sh "g++ -o fran fran.o parser.tab.o"
 end
 
 task :build => ["fran"] do
