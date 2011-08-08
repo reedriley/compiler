@@ -2,3 +2,7 @@
 .*.d
 *.o
 .*.tab.c
+fran
+*.yy.c
+*.tab.c
+*.tab.h

@@ -17,9 +17,13 @@
 
 %defines
 %token <val> NUM
-%type <val> exp
-%type <val> line
 %type <val> input
+%type <val> line
+%type <val> rexp
+%type <val> iexp_1
+%type <val> iexp_2
+%type <val> iexp_3
+%type <val> iexp_4
 
 %% /* Grammar rules and actions follow.  */
 
@@ -28,23 +32,43 @@ input: /* empty */
      ;
 
 line: '\n'
-    | exp '\n'      { printf ("= \t%.10g\n", $1); }
+    | 'r' rexp '\n'      { printf ("= \t%.10g\n", $2); }
+    | 'i' iexp_1 '\n'    { printf ("= \t%.10g\n", $2); }
     | 'h' 'i' '\n'  { printf ("Hello!\n"); }
     | error '\n'
     ;
 
-exp: NUM           { $$ = $1;           }
+rexp: NUM           { $$ = $1;           }
 
    /* Expressions */
-   | exp exp '+'   { $$ = $1 + $2;      }
-   | exp exp '-'   { $$ = $1 - $2;      }
-   | exp exp '*'   { $$ = $1 * $2;      }
-   | exp exp '/'   { $$ = $1 / $2;      }
+   | rexp rexp '+'   { $$ = $1 + $2;      }
+   | rexp rexp '-'   { $$ = $1 - $2;      }
+   | rexp rexp '*'   { $$ = $1 * $2;      }
+   | rexp rexp '/'   { $$ = $1 / $2;      }
 
     /* Exponentiation */
-   | exp exp '^'   { $$ = pow ($1, $2); }
+   | rexp rexp '^'   { $$ = pow ($1, $2); }
 
     /* Unary minus    */
-   | exp 'n'       { $$ = -$1;          }
+   | rexp 'n'       { $$ = -$1;          }
+   ;
+
+iexp_1: iexp_2            { $$ = $1;           }
+      | iexp_2 '+' iexp_2 { $$ = $1 + $3;      }
+      | iexp_2 '-' iexp_2 { $$ = $1 - $3;      }
+      ;
+
+iexp_2: iexp_3            { $$ = $1            }
+      | iexp_3 '*' iexp_3 { $$ = $1 * $3;      }
+      | iexp_3 '/' iexp_3 { $$ = $1 / $3;      }
+      ;
+
+iexp_3: iexp_4            { $$ = $1            }
+      | iexp_4 '^' iexp_4 { $$ = pow ($1, $3); }
+      | '-' iexp_4        { $$ = -$2;          }
+      ;
+
+iexp_4: NUM               { $$ = $1;           }
+      | '(' iexp_1 ')'    { $$ = $2;           }
    ;
 %%
