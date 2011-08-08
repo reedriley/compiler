@@ -1,8 +1,14 @@
+# Temporary files
 .*.swp
+
+# Generated files
 .*.d
+*.tab.cc
+*.tab.hh
+*.yy.cc
+
+# Object files
 *.o
-.*.tab.c
+
+# Executables
 fran
-*.yy.c
-*.tab.c
-*.tab.h

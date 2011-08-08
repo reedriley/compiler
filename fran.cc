@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "fran.h"
+#include "fran.hh"
 
-extern "C" int yyparse();
+extern int yyparse();
 
 int main(int argc, char *argv[]) {
   return yyparse ();

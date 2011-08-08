@@ -1,6 +1,6 @@
 %{
 #include <stdlib.h>
-#include "parser.tab.h"
+#include "parser.tab.hh"
 %}
 %option noyywrap
 %%

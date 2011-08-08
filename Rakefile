@@ -30,30 +30,26 @@ def rule_gnu_compilers(compiler, srcfile)
   end
 end
 
-def rule_c(srcfile)
-  rule_gnu_compilers("gcc", srcfile)
-end
-
 def rule_cpp(srcfile)
   rule_gnu_compilers("g++", srcfile)
 end
 
 def rule_bison(srcfile)
-  generated_file = File.basename(srcfile).ext('tab.c')
-  header_file = File.basename(srcfile).ext('tab.h')
+  generated_file = File.basename(srcfile).ext('tab.cc')
+  header_file = File.basename(srcfile).ext('tab.hh')
 
   CLEAN << generated_file if File.exists? generated_file
   CLEAN << header_file if File.exists? header_file
 
   file generated_file => srcfile do
-    sh "bison #{srcfile}"
+    sh "bison -o #{generated_file} #{srcfile}"
   end
 
-  rule_c(generated_file)
+  rule_cpp(generated_file)
 end
 
 def rule_flex(srcfile)
-  generated_file = File.basename(srcfile).ext('yy.c')
+  generated_file = File.basename(srcfile).ext('yy.cc')
 
   CLEAN << generated_file if File.exists? generated_file
 
@@ -61,15 +57,11 @@ def rule_flex(srcfile)
     sh "flex -o #{generated_file} #{srcfile}"
   end
 
-  rule_c(generated_file)
+  rule_cpp(generated_file)
 end
 
-FileList['*.cpp'].each do |srcfile|
+FileList['*.cc'].each do |srcfile|
   rule_cpp(srcfile)
-end
-
-FileList['*.c'].each do |srcfile|
-  rule_c(srcfile)
 end
 
 FileList['*.y'].each do |srcfile|
