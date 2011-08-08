@@ -1,0 +1,21 @@
+/* Sample syntax? */
+
+int main(string[] args) {
+  return 0;
+}
+
+type Point {
+  int x;
+  double y;
+}
+
+interface Math<T> {
+  void Add(T one, T two);
+}
+
+interface Point : Math {
+  void add(Point one, Point two){
+    /* stuff */
+  }
+}
+

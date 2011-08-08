@@ -1,6 +1,8 @@
 gem 'rake', '>= 0.8.7'
 require 'rake/clean'
 
+CFLAGS=""
+
 task :default => [:build] do
 end
 
@@ -24,7 +26,7 @@ def rule_gnu_compilers(compiler, srcfile)
   end
   
   file objfile => dependencies do
-    sh "#{compiler} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
+    sh "#{compiler} #{CFLAGS} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
   end
 end
 
@@ -38,11 +40,25 @@ end
 
 def rule_bison(srcfile)
   generated_file = File.basename(srcfile).ext('tab.c')
+  header_file = File.basename(srcfile).ext('tab.h')
+
+  CLEAN << generated_file if File.exists? generated_file
+  CLEAN << header_file if File.exists? header_file
+
+  file generated_file => srcfile do
+    sh "bison #{srcfile}"
+  end
+
+  rule_c(generated_file)
+end
+
+def rule_flex(srcfile)
+  generated_file = File.basename(srcfile).ext('yy.c')
 
   CLEAN << generated_file if File.exists? generated_file
 
   file generated_file => srcfile do
-    sh "bison #{srcfile}"
+    sh "flex -o #{generated_file} #{srcfile}"
   end
 
   rule_c(generated_file)
@@ -60,11 +76,14 @@ FileList['*.y'].each do |srcfile|
   rule_bison(srcfile)
 end
 
+FileList['*.l'].each do |srcfile|
+  rule_flex(srcfile)
+end
 
 CLOBBER.include("fran")
 
-file "fran" => ["fran.o", "parser.tab.o"] do |t|
-  sh "g++ -o fran fran.o parser.tab.o"
+file "fran" => ["fran.o", "parser.tab.o", "lexer.yy.o"] do |t|
+  sh "g++ -o #{t.name} #{t.prerequisites.join(" ")}"
 end
 
 task :build => ["fran"] do

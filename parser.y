@@ -2,15 +2,24 @@
 /* Reverse polish notation calculator.  */
 
 %{
-  #define YYSTYPE double 
   #include <math.h>
+  #include <stdio.h>
+
   int yylex (void);
   void yyerror (char const * err) {
-    printf (err);
+    printf ("%s", err);
   }
 %}
 
-%token NUM
+%union {
+  double val;
+}
+
+%defines
+%token <val> NUM
+%type <val> exp
+%type <val> line
+%type <val> input
 
 %% /* Grammar rules and actions follow.  */
 
@@ -18,48 +27,24 @@ input: /* empty */
      | input line
      ;
 
-line:'\n'
-    | exp '\n'      { printf ("\t%.10g\n", $1); }
-     ;
+line: '\n'
+    | exp '\n'      { printf ("= \t%.10g\n", $1); }
+    | 'h' 'i' '\n'  { printf ("Hello!\n"); }
+    | error '\n'
+    ;
 
 exp: NUM           { $$ = $1;           }
+
+   /* Expressions */
    | exp exp '+'   { $$ = $1 + $2;      }
    | exp exp '-'   { $$ = $1 - $2;      }
    | exp exp '*'   { $$ = $1 * $2;      }
    | exp exp '/'   { $$ = $1 / $2;      }
+
     /* Exponentiation */
    | exp exp '^'   { $$ = pow ($1, $2); }
+
     /* Unary minus    */
    | exp 'n'       { $$ = -$1;          }
    ;
 %%
-
-/* The lexical analyzer returns a double floating point
-   number on the stack and the token NUM, or the numeric code
-   of the character read if not a number.  It skips all blanks
-   and tabs, and returns 0 for end-of-input.  */
-
-#include <ctype.h>
-#include <stdio.h>
-
-  int
-yylex (void)
-{
-  int c;
-
-  /* Skip white space.  */
-  while ((c = getchar ()) == ' ' || c == '\t')
-    ;
-  /* Process numbers.  */
-  if (c == '.' || isdigit (c))
-  {
-    ungetc (c, stdin);
-    scanf ("%lf", &yylval);
-    return NUM;
-  }
-  /* Return end-of-input.  */
-  if (c == EOF)
-    return 0;
-  /* Return a single char.  */
-  return c;
-}
