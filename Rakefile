@@ -10,7 +10,7 @@ end
 EXECS = []
 GENS = []
 
-def rule_gnu_compilers(compiler, srcfile)
+def rule_cpp(srcfile)
   objfile = File.basename(srcfile).ext('o')
   depfile = '.' + File.basename(srcfile).ext('d')
 
@@ -32,15 +32,11 @@ def rule_gnu_compilers(compiler, srcfile)
   end
   
   file objfile => dependencies do
-    sh "#{compiler} #{CFLAGS} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
+    sh "#{CXX} #{CFLAGS} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
   end
 
   file depfile => objfile do
   end
-end
-
-def rule_cpp(srcfile)
-  rule_gnu_compilers(CXX, srcfile)
 end
 
 def rule_bison(srcfile)
@@ -99,14 +95,11 @@ end
 rule_executable("fran", ["fran.o", "parser.tab.o", "lexer.yy.o"])
 rule_executable("expr_test", ["expr_test.o", "ast.o"])
 
-task :gens => GENS
-task :execs => EXECS
+desc "build everything"
+task :build => EXECS
 
-task :build => [:gens, :execs] do
-end
-
-task :test => [:build] do
-end
+desc "test everything"
+task :test => [:build]
 
 CLEAN.existing!
 CLOBBER.existing!
