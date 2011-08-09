@@ -2,7 +2,7 @@ gem 'rake', '>= 0.8.7'
 require 'rake/clean'
 
 CXX="g++"
-CPPFLAGS="-Werror `llvm-config --cppflags`"
+CPPFLAGS="-Wall -Werror `llvm-config --cppflags`"
 LDFLAGS="`llvm-config --ldflags --libs core`"
 
 task :default => [:build] do
