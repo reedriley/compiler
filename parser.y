@@ -17,8 +17,6 @@
 
 %defines
 %token <val> NUM
-%type <val> input
-%type <val> line
 %type <val> rexp
 %type <val> iexp_1
 %type <val> iexp_2
