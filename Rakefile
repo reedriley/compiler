@@ -15,9 +15,9 @@ def rule_cpp(srcfile)
   depfile = '.' + File.basename(srcfile).ext('d')
 
   GENS << objfile
-  CLOBBER.include(objfile)
+  CLEAN.include(objfile)
   GENS << depfile
-  CLOBBER.include(depfile)
+  CLEAN.include(depfile)
 
   dependencies = [srcfile]
 
@@ -44,9 +44,9 @@ def rule_bison(srcfile)
   header_file = File.basename(srcfile).ext('tab.hh')
 
   GENS << generated_file
-  CLOBBER.include(generated_file)
+  CLEAN.include(generated_file)
   GENS << header_file
-  CLOBBER.include(header_file)
+  CLEAN.include(header_file)
 
   file generated_file => srcfile do
     sh "bison -o #{generated_file} #{srcfile}"
@@ -62,7 +62,7 @@ def rule_flex(srcfile)
   generated_file = File.basename(srcfile).ext('yy.cc')
 
   GENS << generated_file
-  CLOBBER.include(generated_file)
+  CLEAN.include(generated_file)
 
   file generated_file => srcfile do
     sh "flex -o #{generated_file} #{srcfile}"
@@ -73,7 +73,7 @@ end
 
 def rule_executable(name, sources)
   EXECS << name
-  CLOBBER.include(name)
+  CLEAN.include(name)
 
   file name => sources do |t|
     sh "#{CXX} #{CFLAGS} -o #{t.name} #{t.prerequisites.join(" ")}"
@@ -102,4 +102,3 @@ desc "test everything"
 task :test => [:build]
 
 CLEAN.existing!
-CLOBBER.existing!
