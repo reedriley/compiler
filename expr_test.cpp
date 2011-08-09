@@ -1,4 +1,4 @@
-#include "expr_test.hh"
+#include "expr_test.hpp"
 
 int main(int argv, char *argc[]) {
   LiteralExprAST expr = LiteralExprAST(1.2);

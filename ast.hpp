@@ -1,5 +1,5 @@
-#ifndef __AST_HH
-#define __AST_HH
+#ifndef __AST_H
+#define __AST_H
 
 #include "llvm/DerivedTypes.h"
 #include "llvm/LLVMContext.h"

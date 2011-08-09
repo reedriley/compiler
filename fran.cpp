@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "fran.hh"
+#include "fran.hpp"
 
 extern int yyparse();
 

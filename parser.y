@@ -11,11 +11,12 @@
   }
 %}
 
+%defines
+
 %union {
   double val;
 }
 
-%defines
 %token <val> NUM
 %type <val> rexp
 %type <val> iexp_1

@@ -6,9 +6,9 @@
 
 # Generated files
 .*.d
-*.tab.cc
-*.tab.hh
-*.yy.cc
+*.tab.cpp
+*.tab.hpp
+*.yy.cpp
 
 # Object files
 *.o

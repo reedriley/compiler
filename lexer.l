@@ -1,6 +1,6 @@
 %{
 #include <stdlib.h>
-#include "parser.tab.hh"
+#include "parser.tab.hpp"
 %}
 
 %option nounput

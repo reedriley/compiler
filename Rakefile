@@ -41,8 +41,8 @@ def rule_cpp(srcfile)
 end
 
 def rule_bison(srcfile)
-  generated_file = File.basename(srcfile).ext('tab.cc')
-  header_file = File.basename(srcfile).ext('tab.hh')
+  generated_file = File.basename(srcfile).ext('tab.cpp')
+  header_file = File.basename(srcfile).ext('tab.hpp')
 
   GENS << generated_file
   CLEAN.include(generated_file)
@@ -60,7 +60,7 @@ def rule_bison(srcfile)
 end
 
 def rule_flex(srcfile)
-  generated_file = File.basename(srcfile).ext('yy.cc')
+  generated_file = File.basename(srcfile).ext('yy.cpp')
 
   GENS << generated_file
   CLEAN.include(generated_file)
@@ -81,7 +81,7 @@ def rule_executable(name, sources)
   end
 end
 
-FileList['*.cc'].each do |srcfile|
+FileList['*.cpp'].each do |srcfile|
   rule_cpp(srcfile)
 end
 
