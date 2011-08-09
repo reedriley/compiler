@@ -2,7 +2,8 @@ gem 'rake', '>= 0.8.7'
 require 'rake/clean'
 
 CXX="g++"
-CFLAGS="-Werror"
+CPPFLAGS="-Werror `llvm-config --cppflags`"
+LDFLAGS="`llvm-config --ldflags --libs core`"
 
 task :default => [:build] do
 end
@@ -32,7 +33,7 @@ def rule_cpp(srcfile)
   end
   
   file objfile => dependencies do
-    sh "#{CXX} #{CFLAGS} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
+    sh "#{CXX} #{CPPFLAGS} -c -o #{objfile} #{srcfile} -MD -MF #{depfile}"
   end
 
   file depfile => objfile do
@@ -76,7 +77,7 @@ def rule_executable(name, sources)
   CLEAN.include(name)
 
   file name => sources do |t|
-    sh "#{CXX} #{CFLAGS} -o #{t.name} #{t.prerequisites.join(" ")}"
+    sh "#{CXX} #{LDFLAGS} -o #{t.name} #{t.prerequisites.join(" ")}"
   end
 end
 
