@@ -9,16 +9,22 @@
 
 using namespace llvm;
 
+class ExprAST;
+
 /* Declarations */
 class DeclarationAST {
   public:
     virtual ~DeclarationAST() {}
+    virtual Value *Codegen() = 0;
 };
 
-/* Statements */
-class StatementAST {
+class FunctionAST : public DeclarationAST {
+  private:
+    std::string name;
+    ExprAST *ret;
   public:
-    virtual ~StatementAST() {}
+    FunctionAST(std::string name, ExprAST *ret) : name(name), ret(ret) {}
+    virtual Value *Codegen();
 };
 
 /* Expressions */
@@ -35,5 +41,21 @@ class LiteralExprAST : public ExprAST {
     LiteralExprAST(double val) : val(val) {}
     virtual Value *Codegen();
 };
+
+/* Statements */
+class StatementAST {
+  public:
+    virtual ~StatementAST() {}
+    virtual Value *Codegen() = 0;
+};
+
+class ReturnAST : public StatementAST {
+  private:
+    ExprAST *expr;
+  public:
+    ReturnAST(ExprAST *expr) : expr(expr) {}
+    virtual Value *Codegen();
+};
+
 
 #endif
