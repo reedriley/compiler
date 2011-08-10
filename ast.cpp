@@ -1,12 +1,13 @@
 #include "ast.hpp"
 
 static Module *TheModule;
-static IRBuilder<> Builder(getGlobalContext());
 
 /* Declarations */
-Value *FunctionAST::Codegen() {
+Value *FunctionAST::Codegen(llvm::LLVMContext& context) {
+  IRBuilder<> Builder(context);
+
   std::vector<const Type*> args;
-  FunctionType *FT = FunctionType::get(Type::getDoubleTy(getGlobalContext()), args, false);
+  FunctionType *FT = FunctionType::get(Type::getDoubleTy(context), args, false);
   Function *F = Function::Create(FT, Function::ExternalLinkage, name, TheModule);
 
   if (F->getName() != name) {
@@ -24,10 +25,10 @@ Value *FunctionAST::Codegen() {
     }
   }
 
-  BasicBlock *BB = BasicBlock::Create(getGlobalContext(), "entry", F);
+  BasicBlock *BB = BasicBlock::Create(context, "entry", F);
   Builder.SetInsertPoint(BB);
 
-  Builder.CreateRet(ret->Codegen());
+  Builder.CreateRet(ret->Codegen(context));
 
   verifyFunction(*F);
 
@@ -35,11 +36,11 @@ Value *FunctionAST::Codegen() {
 }
 
 /* Statements */
-Value *ReturnAST::Codegen() {
+Value *ReturnAST::Codegen(llvm::LLVMContext& context) {
   return NULL;
 }
 
 /* Expressions */
-Value *LiteralExprAST::Codegen() {
-  return ConstantFP::get(getGlobalContext(), APFloat(val));
+Value *LiteralExprAST::Codegen(llvm::LLVMContext& context) {
+  return ConstantFP::get(context, APFloat(val));
 }

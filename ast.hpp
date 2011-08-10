@@ -15,7 +15,7 @@ class ExprAST;
 class DeclarationAST {
   public:
     virtual ~DeclarationAST() {}
-    virtual Value *Codegen() = 0;
+    virtual Value *Codegen(llvm::LLVMContext& context) = 0;
 };
 
 class FunctionAST : public DeclarationAST {
@@ -24,14 +24,14 @@ class FunctionAST : public DeclarationAST {
     ExprAST *ret;
   public:
     FunctionAST(std::string name, ExprAST *ret) : name(name), ret(ret) {}
-    virtual Value *Codegen();
+    virtual Value *Codegen(llvm::LLVMContext& context);
 };
 
 /* Expressions */
 class ExprAST {
   public:
     virtual ~ExprAST() {}
-    virtual Value *Codegen() = 0;
+    virtual Value *Codegen(llvm::LLVMContext &context) = 0;
 };
 
 class LiteralExprAST : public ExprAST {
@@ -39,14 +39,14 @@ class LiteralExprAST : public ExprAST {
     double val;
   public:
     LiteralExprAST(double val) : val(val) {}
-    virtual Value *Codegen();
+    virtual Value *Codegen(llvm::LLVMContext &context);
 };
 
 /* Statements */
 class StatementAST {
   public:
     virtual ~StatementAST() {}
-    virtual Value *Codegen() = 0;
+    virtual Value *Codegen(llvm::LLVMContext &context) = 0;
 };
 
 class ReturnAST : public StatementAST {
@@ -54,7 +54,7 @@ class ReturnAST : public StatementAST {
     ExprAST *expr;
   public:
     ReturnAST(ExprAST *expr) : expr(expr) {}
-    virtual Value *Codegen();
+    virtual Value *Codegen(llvm::LLVMContext &context);
 };
 
 
