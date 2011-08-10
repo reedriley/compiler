@@ -1,21 +1,22 @@
 /* TODO: Remove this, it's taken from BISON's documentation */
 /* Reverse polish notation calculator.  */
 
-%{
-  #include <math.h>
-  #include <stdio.h>
-
-  int yylex (void);
-  void yyerror (char const * err) {
-    printf ("%s", err);
-  }
-%}
-
+%pure-parser
 %defines
 
 %union {
   double val;
 }
+
+%{
+  #include <math.h>
+  #include <stdio.h>
+
+  int yylex (YYSTYPE *yylval);
+  void yyerror (char const * err) {
+    printf ("%s", err);
+  }
+%}
 
 %token <val> NUM
 %type <val> rexp
