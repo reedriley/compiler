@@ -24,15 +24,11 @@ Value* FunctionAST::Codegen(llvm::LLVMContext& context) {
     }
   }
 
-  BasicBlock* entry = BasicBlock::Create(context, "entry", F);
-  BasicBlock* retBlock = BasicBlock::Create(context, "ret", F);
-  BasicBlock* ret2Block = BasicBlock::Create(context, "ret", F);
-
-  Builder.SetInsertPoint(entry);
-  Builder.CreateBr(retBlock);
-
-  stmt->Codegen(context, retBlock);
-  stmt->Codegen(context, ret2Block);
+  std::vector<StatementAST*>::iterator p;
+  for (p = stmts.begin(); p != stmts.end(); p++) {
+    BasicBlock* stmt = BasicBlock::Create(context, "", F);
+    (*p)->Codegen(context, stmt);
+  }
 
   verifyFunction(*F);
 

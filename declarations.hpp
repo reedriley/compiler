@@ -12,9 +12,9 @@ class DeclarationAST {
 class FunctionAST : public DeclarationAST {
   private:
     std::string name;
-    StatementAST* stmt;
+    std::vector<StatementAST*> stmts;
   public:
-    FunctionAST(std::string name, StatementAST* stmt) : name(name), stmt(stmt) {}
+    FunctionAST(std::string name, std::vector<StatementAST*> stmts) : name(name), stmts(stmts) {}
     virtual Value* Codegen(llvm::LLVMContext& context);
 };
 

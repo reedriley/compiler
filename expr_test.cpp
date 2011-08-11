@@ -10,10 +10,14 @@ int main(int argv, char* argc[]) {
   double val = 2;
   foo(val);
 
-  LiteralExprAST expr(val);
-  ReturnAST ret(&expr);
+  LiteralExprAST expr(val), expr2(2);
+  ReturnAST ret(&expr), ret2(&expr2);
 
-  FunctionAST func("foo", &ret);
+  std::vector<StatementAST*> stmts;
+  stmts.push_back(&ret);
+  stmts.push_back(&ret2);
+
+  FunctionAST func("foo", stmts);
   llvm::Value* result = func.Codegen(context);
   result->dump();
   return 0;
