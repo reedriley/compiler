@@ -26,7 +26,9 @@ def rule_cpp(srcfile)
     File.open(depfile) do |deps|
       while line = deps.gets
         line.split(%r{\s+|:|\\$}).each do |dep|
-          dependencies << dep if !dep.empty? && dep != objfile
+          if !dep.empty? && dep != objfile
+            dependencies << dep
+          end
         end
       end
     end
@@ -94,7 +96,7 @@ FileList['*.l'].each do |srcfile|
 end
 
 rule_executable("fran", ["fran.o", "parser.tab.o", "lexer.yy.o"])
-rule_executable("expr_test", ["expr_test.o", "ast.o"])
+rule_executable("expr_test", ["expr_test.o", "expressions.o", "declarations.o", "statements.o"])
 
 desc "build everything"
 task :build => EXECS

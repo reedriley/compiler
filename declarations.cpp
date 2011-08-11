@@ -1,8 +1,7 @@
-#include "ast.hpp"
+#include "declarations.hpp"
 
 static Module* TheModule;
 
-/* Declarations */
 Value* FunctionAST::Codegen(llvm::LLVMContext& context) {
   IRBuilder<> Builder(context);
 
@@ -38,16 +37,4 @@ Value* FunctionAST::Codegen(llvm::LLVMContext& context) {
   verifyFunction(*F);
 
   return F;
-}
-
-/* Statements */
-void ReturnAST::Codegen(llvm::LLVMContext& context, llvm::BasicBlock* block) {
-  IRBuilder<> builder(context);
-  builder.SetInsertPoint(block);
-  builder.CreateRet(expr->Codegen(context));
-}
-
-/* Expressions */
-Value* LiteralExprAST::Codegen(llvm::LLVMContext& context) {
-  return ConstantFP::get(context, APFloat(val));
 }
