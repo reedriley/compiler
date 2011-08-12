@@ -8,7 +8,7 @@ using namespace llvm;
 class StatementAST {
   public:
     virtual ~StatementAST() {}
-    virtual void Codegen(llvm::LLVMContext& context, llvm::BasicBlock* block) = 0;
+    virtual void Codegen(llvm::LLVMContext& context, llvm::Function* func, llvm::BasicBlock* &block);
 };
 
 class ReturnAST : public StatementAST {
@@ -16,7 +16,7 @@ class ReturnAST : public StatementAST {
     ExprAST* expr;
   public:
     ReturnAST(ExprAST* expr) : expr(expr) {}
-    virtual void Codegen(llvm::LLVMContext& context, llvm::BasicBlock* block);
+    virtual void Codegen(llvm::LLVMContext& context, llvm::Function* func, llvm::BasicBlock* &block);
 };
 
 #endif

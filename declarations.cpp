@@ -24,10 +24,11 @@ Value* FunctionAST::Codegen(llvm::LLVMContext& context) {
     }
   }
 
+  BasicBlock* cur_block = BasicBlock::Create(context, "", F);
+
   std::vector<StatementAST*>::iterator p;
   for (p = stmts.begin(); p != stmts.end(); p++) {
-    BasicBlock* stmt = BasicBlock::Create(context, "", F);
-    (*p)->Codegen(context, stmt);
+    (*p)->Codegen(context, F, cur_block);
   }
 
   verifyFunction(*F);
