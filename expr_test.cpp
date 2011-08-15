@@ -1,7 +1,18 @@
 #include "expr_test.hpp"
+#include "gtest/gtest.h"
 
 void foo(int& val) {
   val = 1;
+}
+
+TEST(BasicTest, Passing) {
+  EXPECT_TRUE(true);
+  EXPECT_FALSE(false);
+}
+
+TEST(BasicTest, Passing2) {
+  EXPECT_TRUE(true);
+  EXPECT_FALSE(false);
 }
 
 int main(int argv, char* argc[]) {
@@ -20,5 +31,7 @@ int main(int argv, char* argc[]) {
   FunctionAST func("main", stmts);
   llvm::Value* result = func.Codegen(context);
   result->dump();
-  return 0;
+
+  testing::InitGoogleTest(&argv, argc);
+  return RUN_ALL_TESTS();
 }

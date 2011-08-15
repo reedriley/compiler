@@ -3,7 +3,7 @@ require 'rake/clean'
 
 CXX="g++"
 CPPFLAGS="-Wall -Werror `llvm-config --cppflags`"
-LDFLAGS="`llvm-config --ldflags --libs core`"
+LDFLAGS="-lgtest `llvm-config --ldflags --libs core`"
 
 task :default => [:build] do
 end
