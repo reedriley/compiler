@@ -1,9 +1,3 @@
-# Temporary files
-.swp
-.swo
-.*.swp
-.*.swo
-
 # Generated files
 .*.d
 *.tab.cpp
@@ -12,6 +6,9 @@
 
 # Object files
 *.o
+*.ll
+*.bc
+*.s
 
 # Executables
 fran
