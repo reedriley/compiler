@@ -1,5 +1,5 @@
 #include "expressions.hpp"
 
 Value* LiteralExprAST::Codegen(llvm::LLVMContext& context) {
-  return ConstantFP::get(context, APFloat(val));
+  return ConstantInt::get(context, APInt(64, val));
 }

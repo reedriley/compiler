@@ -17,9 +17,9 @@ class ExprAST {
 
 class LiteralExprAST : public ExprAST {
   private:
-    double val;
+    int val;
   public:
-    LiteralExprAST(double val) : val(val) {}
+    LiteralExprAST(int val) : val(val) {}
     virtual Value* Codegen(llvm::LLVMContext& context);
 };
 

@@ -6,7 +6,7 @@ Value* FunctionAST::Codegen(llvm::LLVMContext& context) {
   IRBuilder<> Builder(context);
 
   std::vector<const Type*> args;
-  FunctionType* FT = FunctionType::get(Type::getDoubleTy(context), args, false);
+  FunctionType* FT = FunctionType::get(Type::getInt64Ty(context), args, false);
   Function* F = Function::Create(FT, Function::ExternalLinkage, name, TheModule);
 
   if (F->getName() != name) {
